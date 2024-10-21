@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier
+AnswerStrategy: recommended
+Authors: nandoconde <fernando.conde.pumpido@outlook.com>
+CodeOfConductContact: fernando.conde.pumpido@outlook.com
+JuliaIndentation: 4
+JuliaMinVersion: '1.11'
+License: MIT
+LicenseCopyrightHolders: nandoconde
+PackageName: GnssDates
+PackageOwner: nandoconde
+PackageUUID: e3dbbf4c-e8f6-588c-bc4a-4c34f15afb57
+_commit: v0.13.0
+_src_path: https://github.com/JuliaBesties/BestieTemplate.jl
