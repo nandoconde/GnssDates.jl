@@ -1,6 +1,5 @@
 using GnssDates
-using GnssDates:
-    GnssTime_, GST_, GPST_, GAL_WEEK_OFFSET, SECONDS_IN_WEEK, Unchecked, GST₀, GPST₀
+using GnssDates: GAL_WEEK_OFFSET, SECONDS_IN_WEEK, GST₀, GPST₀
 using Test
 using Dates
 
@@ -8,12 +7,12 @@ using Dates
 
 # test canonicalization for all CoarseTime
 @testset "systemtime.jl (coarse canonicalization)" begin
-    gst = GST_(966, SECONDS_IN_WEEK - 1)
-    gst_ = GST_(967, -1)
-    gpst = GPST_(1990, SECONDS_IN_WEEK - 1)
-    gpst_ = GPST_(1991, -1)
-    @test Dates.canonicalize(gst_) == gst
-    @test Dates.canonicalize(gpst_) == gpst
+    gst = GST(966, SECONDS_IN_WEEK - 1)
+    gst_ = GST(967, -1)
+    gpst = GPST(1990, SECONDS_IN_WEEK - 1)
+    gpst_ = GPST(1991, -1)
+    @test gst_ == gst
+    @test gpst_ == gpst
 end
 
 # test CoarseTime -> GnssTime via `Base.convert`
@@ -70,18 +69,18 @@ end
     gst = GST(1991 - GAL_WEEK_OFFSET, 441600)
     gpst = GPST(1991, 441600)
     gnsst = GnssTime(1991, 441600, 0.0)
-    gst_ = GST_(1990 - GAL_WEEK_OFFSET, 441600 + SECONDS_IN_WEEK)
-    gpst_ = GPST_(1990, 441600 + SECONDS_IN_WEEK)
+    gst_ = GST(1990 - GAL_WEEK_OFFSET, 441600 + SECONDS_IN_WEEK)
+    gpst_ = GPST(1990, 441600 + SECONDS_IN_WEEK)
     # gnsst_ = GnssTime(1990, 441599 + SECONDS_IN_WEEK, 1.0)
     # nominal convert
     @test GnssTime(gpst) == gnsst
     @test GnssTime(gst) == gnsst
     # unchecked nominal constructor
-    @test Dates.canonicalize(GnssTime(gpst_, Unchecked())) == gnsst
-    @test Dates.canonicalize(GnssTime(gst_, Unchecked())) == gnsst
+    @test GnssTime(gpst_) == gnsst
+    @test GnssTime(gst_) == gnsst
     # shortcut constructor
-    @test Dates.canonicalize(GnssTime_(gpst_)) == gnsst
-    @test Dates.canonicalize(GnssTime_(gst_)) == gnsst
+    @test GnssTime(gpst_) == gnsst
+    @test GnssTime(gst_) == gnsst
 end
 
 # test SystemTime -> {Date, DateTime} via convenience constructor

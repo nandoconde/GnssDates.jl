@@ -1,7 +1,7 @@
 module GnssDates
 
 
-import Base
+import Base: Base, convert
 import Dates: Date, DateTime, canonicalize, UTC, Dates, Week, Second, Millisecond
 import LeapSeconds
 
@@ -13,10 +13,10 @@ if VERSION >= v"1.11.0-DEV.469"
     eval(Meta.parse("public TimeDelta, CoarseTimeDelta, FineTimeDelta"))
     eval(Meta.parse("public SECONDS_IN_WEEK, GAL_WEEK_OFFSET, LEAP_SECOND_TAI_OFFSET"))
     eval(Meta.parse("public GPST₀, GST₀"))
-    eval(Meta.parse("public Unchecked"))
 end
 
 include("constants.jl")
+include("helpers.jl")
 include("timedelta.jl")
 include("systemtime.jl")
 include("operations.jl")

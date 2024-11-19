@@ -1,5 +1,4 @@
-using GnssDates: SECONDS_IN_WEEK, GnssTime, Unchecked, FineTime, SystemTime
-using GnssDates: GPST₀, CoarseTimeDelta, GnssTime_
+using GnssDates: SECONDS_IN_WEEK, GnssTime, FineTime, SystemTime, GPST₀, CoarseTimeDelta
 using Dates: Hour, Second, UTC
 
 @testset "GnssTime type" begin
@@ -20,32 +19,25 @@ end
     tow2 = -1
     towf2 = -1.5
     gnsst0 = GnssTime(wn, tow, towf)
-    gnsst1 = GnssTime(wn1, tow1, towf1, Unchecked())
+    gnsst1 = GnssTime(wn1, tow1, towf1)
     # construct GnssTime
     @test gnsst0.wn == wn
     @test gnsst0.tow_int == tow
     @test gnsst0.tow_frac == towf
-    @test gnsst1.wn == wn1
-    @test gnsst1.tow_int == tow1
-    @test gnsst1.tow_frac == towf1
-    @test_throws DomainError GnssTime(wn1, tow, towf)
-    @test_throws DomainError GnssTime(wn, tow1, towf)
-    @test_throws DomainError GnssTime(wn, tow2, towf)
-    @test_throws DomainError GnssTime(wn, tow, towf1)
-    @test_throws DomainError GnssTime(wn, tow, towf2)
+    @test gnsst1.wn == wn1 + 1
+    @test gnsst1.tow_int == tow1 - SECONDS_IN_WEEK + 1
+    @test gnsst1.tow_frac == towf1 - 1
 end
 
 @testset "GnssTime canonicalization" begin
     wn = 0
     tow = SECONDS_IN_WEEK
     towf = 1.5
-    gnsst0 = GnssTime(wn, tow, towf, Unchecked())
-    gnsst1 = GnssTime(-1, tow, towf, Unchecked())
+    gnsst0 = GnssTime(wn, tow, towf)
+    gnsst1 = GnssTime(-1, tow, towf)
     # test correct canonicalization
-    @test Dates.canonicalize(gnsst0) == GnssTime(1, 1, 0.5)
-    @test Dates.canonicalize(gnsst1) == GnssTime(0, 1, 0.5)
-    # test domain error
-    @test_throws DomainError Dates.canonicalize(GnssTime(0, 1, -1.5))
+    @test gnsst0 == GnssTime(1, 1, 0.5)
+    @test gnsst1 == GnssTime(0, 1, 0.5)
 end
 
 @testset "GnssTime to/from {Date, DateTime} (via Base.convert)" begin
@@ -62,18 +54,17 @@ end
     wn = 0
     tow = SECONDS_IN_WEEK
     towf = 1.5
-    gnsst = GnssTime(wn, tow, towf, Unchecked())
+    gnsst = GnssTime(wn, tow, towf)
     @test GnssTime(gnsst) == GnssTime(1, 1, 0.5)
-    @test GnssTime_(gnsst) == gnsst
-    @test GnssTime(gnsst, Unchecked()) == gnsst
-    @test GnssTime_(wn, tow, towf) == gnsst
+    @test GnssTime(gnsst) == gnsst
+    @test GnssTime(wn, tow, towf) == gnsst
 end
 
 @testset "GnssTime -> {Date, DateTime} convenience conversion" begin
     gnsst0 = GnssTime(1991, 432000, 0.0)
     date = Date(2018, 3, 9)
     datetime = DateTime(2018, 3, 9)
-    gnsst1 = GnssTime_(0, -3600, 0.0)
+    gnsst1 = GnssTime(0, -3600, 0.0)
     @test DateTime(gnsst0) == datetime
     @test Date(gnsst0) == date
     @test DateTime(gnsst1) == (GPST₀ - Hour(1))
@@ -88,8 +79,8 @@ end
     delta_day = CoarseTimeDelta(0, 24 * 3600)
     @test GnssTime(date) == gnsst
     @test GnssTime(datetime) == gnsst
-    @test GnssTime(datetime_, Unchecked()) + delta_hour == GnssTime(0, 0, 0.0)
-    @test GnssTime(Date(datetime_), Unchecked()) + delta_day == GnssTime(0, 0, 0.0)
+    @test GnssTime(datetime_) + delta_hour == GnssTime(0, 0, 0.0)
+    @test GnssTime(Date(datetime_)) + delta_day == GnssTime(0, 0, 0.0)
 end
 
 @testset "GnssTime to/from UTC DateTime" begin

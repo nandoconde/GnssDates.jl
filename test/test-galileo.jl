@@ -1,14 +1,4 @@
-using GnssDates:
-    GST,
-    SECONDS_IN_WEEK,
-    GST_,
-    GST₀,
-    GnssTime,
-    Unchecked,
-    GAL_WEEK_OFFSET,
-    GnssTime_,
-    GPST,
-    GPST_
+using GnssDates: GST, SECONDS_IN_WEEK, GST₀, GnssTime, GAL_WEEK_OFFSET, GPST
 using Dates: Date, DateTime
 
 @testset "GST type" begin
@@ -23,25 +13,21 @@ end
     tow0 = 0
     tow1 = SECONDS_IN_WEEK
     gst0 = GST(wn0, tow0)
-    gst1 = GST(wn1, tow1, Unchecked())
+    gst1 = GST(wn1, tow1)
     @test gst0.wn == wn0
     @test gst0.tow == tow0
-    @test gst1.wn == wn1
-    @test gst1.tow == tow1
-    @test_throws DomainError GST(wn0, tow1)
-    @test_throws DomainError GST(wn0, -1)
-    @test_throws DomainError GST(-1, tow0)
+    @test gst1.wn == (wn1 + 1)
+    @test gst1.tow == 0
 end
 
 @testset "GST convenience constructors" begin
     wn = 0
     tow = SECONDS_IN_WEEK + 1
     towf = 1.5
-    gst = GST(wn, tow, Unchecked())
+    gst = GST(wn, tow)
     @test GST(gst) == GST(1, 1)
-    @test GST_(gst) == gst
-    @test GST(gst, Unchecked()) == gst
-    @test GST_(wn, tow) == gst
+    @test GST(gst) == gst
+    @test GST(wn, tow) == gst
 end
 
 @testset "SystemTime -> GST convenience conversion" begin
@@ -53,11 +39,11 @@ end
     @test GST(gnsst) == gst
     @test GST(gpst) == gst
     # corner cases
-    gnsst_ = GnssTime_(0, -3600, 0.0)
-    gpst_ = GPST_(0, -3600)
+    gnsst_ = GnssTime(0, -3600, 0.0)
+    gpst_ = GPST(0, -3600)
     delta_weeks = CoarseTimeDelta(GAL_WEEK_OFFSET, 0)
-    @test (GST_(gnsst_) + CoarseTimeDelta(0, 3600)) + delta_weeks == GST(0, 0)
-    @test (GST_(gpst_) + CoarseTimeDelta(0, 3600)) + delta_weeks == GST(0, 0)
+    @test (GST(gnsst_) + CoarseTimeDelta(0, 3600)) + delta_weeks == GST(0, 0)
+    @test (GST(gpst_) + CoarseTimeDelta(0, 3600)) + delta_weeks == GST(0, 0)
 end
 
 @testset "GST <- {Date, DateTime} convenience conversion" begin
@@ -71,8 +57,8 @@ end
     @test GST(date) == gst
     @test GST(datetime) == gst
     # corner cases
-    @test GST_(datetime_) + delta_hour == GST(0, 0)
-    @test GST_(Date(datetime_)) + delta_day == GST(0, 0)
+    @test GST(datetime_) + delta_hour == GST(0, 0)
+    @test GST(Date(datetime_)) + delta_day == GST(0, 0)
 end
 
 @testset "GST to/from UTC DateTime" begin

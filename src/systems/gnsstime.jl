@@ -7,56 +7,9 @@ struct GnssTime <: FineTime
     tow_int::Int
     tow_frac::Float64
 
-    # main constructor
     function GnssTime(wn, tow_int, tow_frac)
-        if wn < 0
-            throw(DomainError(wn, "GnssTime cannot have a negative week number"))
-        elseif tow_int < 0
-            throw(DomainError(tow_int, "GnssTime cannot have a negative time of week"))
-        elseif tow_int >= SECONDS_IN_WEEK
-            throw(
-                DomainError(
-                    tow_int,
-                    "GnssTime cannot have a time of week greater than SECONDS_IN_WEEK",
-                ),
-            )
-        elseif tow_frac < 0.0
-            throw(
-                DomainError(
-                    tow_frac,
-                    "GnssTime cannot have a negative fractional time of week",
-                ),
-            )
-        elseif tow_frac >= 1.0
-            throw(
-                DomainError(
-                    tow_frac,
-                    "GnssTime cannot have a fractional time of week greater than 1.0",
-                ),
-            )
-        else
-            return new(Int(wn), Int(tow_int), Float64(tow_frac))
-        end
-    end
-
-    # unchecked constructor
-    function GnssTime(wn, tow_int, tow_frac, ::Unchecked)
-        return new(Int(wn), Int(tow_int), Float64(tow_frac))
-    end
-end
-
-
-# ==========================================================================================
-# canonicalization
-# ==========================================================================================
-function Dates.canonicalize(t::GnssTime)
-    Δtow, tow_frac = fldmod(t.tow_frac, 1.0)
-    Δweeks, tow_int = fldmod(t.tow_int + Int(Δtow), SECONDS_IN_WEEK)
-    wn = t.wn + Δweeks
-    if wn < 0
-        throw(DomainError(wn, "GnssTime cannot be a negative time."))
-    else
-        return GnssTime(wn, tow_int, tow_frac, Unchecked())
+        wn_, tow_, towf_ = _canon_finetime(Int(wn), Int(tow_int), Float64(tow_frac))
+        return new(wn_, tow_, towf_)
     end
 end
 
@@ -64,47 +17,31 @@ end
 # ==========================================================================================
 # conversion
 # ==========================================================================================
-# unchecked_convert (DateTime)
-function unchecked_convert(::Type{GnssTime}, t::DateTime)
+function Base.convert(::Type{T}, t::DateTime) where {T <: GnssTime}
     # note: CompoundPeriods are not used because they allocate :)
     Δms = (t - GPST₀).value # Milliseconds
     # Δms < 0 && throw(DomainError(t, "GnssTime cannot represent a date before GPST₀"))
     Δs, tow_frac_ms = fldmod(Δms, 1000)
     tow_frac = tow_frac_ms / 1000
     wn, tow_int = fldmod(Δs, SECONDS_IN_WEEK)
-    return GnssTime(wn, tow_int, tow_frac, Unchecked())
+    return GnssTime(wn, tow_int, tow_frac)
 end
-
-# GnssTime to DateTime
 function Base.convert(::Type{T}, t::GnssTime) where {T <: DateTime}
     return GPST₀ + Week(t.wn) + Second(t.tow_int) + Millisecond(floor(t.tow_frac * 1000))
 end
 function Base.convert(::Type{T}, t::GnssTime) where {T <: Date}
-    return Date(Base.convert(DateTime, t))
+    return Date(convert(DateTime, t))
 end
 function Base.convert(::Type{T}, t::Union{Date, DateTime}) where {T <: GnssTime}
-    return Dates.canonicalize(unchecked_convert(GnssTime, DateTime(t)))
+    return convert(GnssTime, DateTime(t))
 end
 
 
 # ==========================================================================================
 # convenience constructors
 # ==========================================================================================
-# GnssTime (checked)
-GnssTime(t::GnssTime) = Dates.canonicalize(t)
-
-# GnssTime (unchecked)
-GnssTime_(t::GnssTime) = t
-GnssTime(t::GnssTime, ::Unchecked) = t
-GnssTime_(wn, tow_int, tow_frac) = GnssTime(wn, tow_int, tow_frac, Unchecked())
-
-# Dates to Gnss
-GnssTime(t::DateTime) = Base.convert(GnssTime, t)
-GnssTime(t::Date) = Base.convert(GnssTime, t)
-GnssTime(t::DateTime, ::Unchecked) = unchecked_convert(GnssTime, t)
-GnssTime(t::Date, ::Unchecked) = unchecked_convert(GnssTime, DateTime(t))
-GnssTime_(t::DateTime) = GnssTime(t, Unchecked())
-GnssTime_(t::Date) = GnssTime(t, Unchecked())
+# Convenience conversion
+GnssTime(t::Union{SystemTime, Date, DateTime}) = Base.convert(GnssTime, t)
 
 # UTC
 #   NOTE:
