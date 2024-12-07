@@ -1,11 +1,8 @@
-# Don't forget to run
-#
-#     pkg> dev ..
-#
 [deps]
+Changelog = "5217a498-cd5d-4ec6-b8c2-9b85a09b6e3e"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
 GnssDates = "e3dbbf4c-e8f6-588c-bc4a-4c34f15afb57"
+LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
 
 [compat]
 Documenter = "1"

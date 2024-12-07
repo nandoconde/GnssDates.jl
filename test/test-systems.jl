@@ -3,8 +3,6 @@ using GnssDates: GAL_WEEK_OFFSET, SECONDS_IN_WEEK, GST₀, GPST₀
 using Test
 using Dates
 
-# TODO check docstring for `Dates.canonicalize(::SystemTime)`
-
 # test canonicalization for all CoarseTime
 @testset "systemtime.jl (coarse canonicalization)" begin
     gst = GST(966, SECONDS_IN_WEEK - 1)

@@ -1,10 +1,21 @@
 # ==========================================================================================
-# time delta
+# supertype
 # ==========================================================================================
-# common supertype
+"Abstract supertype for all time intervals."
 abstract type TimeDelta end
 
+
+# ==========================================================================================
 # implementations
+# ==========================================================================================
+
+"""
+    CoarseTimeDelta(weeks, seconds)
+
+Time interval with integer-second resolution.
+
+The constructor can convert automatically from other date and datetime types.
+"""
 struct CoarseTimeDelta <: TimeDelta
     weeks::Int
     seconds::Int
@@ -15,6 +26,13 @@ struct CoarseTimeDelta <: TimeDelta
     end
 end
 
+"""
+    FineTimeDelta(weeks, seconds, seconds_frac)
+
+Time interval with subsecond resolution.
+
+The constructor can convert automatically from other date and datetime types.
+"""
 struct FineTimeDelta <: TimeDelta
     weeks::Int
     seconds::Int

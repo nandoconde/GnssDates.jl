@@ -1,9 +1,24 @@
 # ==========================================================================================
 # generic galileo time
 # ==========================================================================================
-# TODO Document struct and fields
+"""
+    GST(wn, tow) <: CoarseTime
+
+Coarse time reference as disseminated by Galileo.
+
+# Resolution
+It has integer-second resolution because TOW is represented by an `Int64`.
+WN does not rollover (it keeps counting since GST₀ continuously.)
+
+# More info
+Check
+[Time References in GNSS](https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS)
+for more info.
+"""
 struct GST <: CoarseTime
+    "Week number as complete weeks elapsed since GST₀."
     wn::Int
+    "Time of week as complete seconds since the beginning of week."
     tow::Int
 
     function GST(wn, tow)
@@ -30,7 +45,22 @@ end
 # convenience constructors
 # ==========================================================================================
 # Convenience conversion
+"""
+    GST(t::T)
+
+Convert from time reference of type `T` to `GST`.
+
+Valid types are:
+- `T::SystemTime`
+- `T::Date`
+- `T::DateTime`
+"""
 GST(t::Union{Date, DateTime, SystemTime}) = Base.convert(GST, t)
 
 # Convenience conversion (UTC)
+"""
+    GST(t::DateTime, UTC)
+
+Convert from `DateTime` assumming that `t` is a UTC time.
+"""
 GST(t::DateTime, ::Type{UTC}) = GST(GnssTime(t, UTC))

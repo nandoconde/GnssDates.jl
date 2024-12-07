@@ -25,13 +25,13 @@ function Base.isless(a::S, b::T) where {S <: SystemTime, T <: SystemTime}
     return GnssTime(a) < GnssTime(b)
 end
 
-# DeltaTime equality
+# TimeDelta equality
 # Base.:(==)(a::CoarseTimeDelta, b::CoarseTimeDelta) -> default equality
 # Base.:(==)(a::FineTimeDelta, b::FineTimeDelta) -> default equality
 Base.:(==)(a::FineTimeDelta, b::CoarseTimeDelta) = a == FineTimeDelta(b)
 Base.:(==)(a::CoarseTimeDelta, b::FineTimeDelta) = FineTimeDelta(a) == b
 
-# DeltaTime isless
+# TimeDelta isless
 function Base.isless(a::CoarseTimeDelta, b::CoarseTimeDelta)
     return ifelse(a.weeks < b.weeks, true, a.seconds < b.seconds)
 end

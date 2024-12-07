@@ -9,7 +9,7 @@ using GnssDates: GnssTime, GST, GPST, SECONDS_IN_WEEK, GAL_WEEK_OFFSET
     gnsst0 = GnssTime(1991, 432000, 0.0)
     gnsst1 = GnssTime(1991, 432000, 0.0)
     @test gnsst0 == gnsst1
-    # canonicalize first
+    # test normalization
     gnsst2 = GnssTime(1990, 432000 + SECONDS_IN_WEEK, 0.0)
     gnsst3 = GnssTime(1991, 431998, 2.0)
     @test gnsst0 == gnsst2
@@ -29,7 +29,7 @@ end
     @test gpst0 == gpst1
     @test gst0 == gpst0
     @test gst0 == gnsst0
-    # canonicalize first, self and crossed
+    # test normalization, self and crossed
     gnsst2 = GnssTime(1990, 432000 + SECONDS_IN_WEEK, 0.0)
     gst2 = GST(1990 - GAL_WEEK_OFFSET, 432000 + SECONDS_IN_WEEK)
     gpst2 = GPST(1990, 432000 + SECONDS_IN_WEEK)
@@ -67,7 +67,7 @@ end
     @test gnsst >= gst
 end
 
-@testset "DeltaTime equality" begin
+@testset "TimeDelta equality" begin
     # self, coarse
     ctd1 = CoarseTimeDelta(4, 197)  
     ctd2 = CoarseTimeDelta(4, 198)
@@ -85,7 +85,7 @@ end
     @test ftd1 == FineTimeDelta(3, 196 + SECONDS_IN_WEEK, 1.0)
 end
 
-@testset "DeltaTime isless" begin
+@testset "TimeDelta isless" begin
     # self, coarse
     ctd1 = CoarseTimeDelta(4, 197)  
     ctd2 = CoarseTimeDelta(4, 198)

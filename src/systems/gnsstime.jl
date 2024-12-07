@@ -1,10 +1,22 @@
 # ==========================================================================================
 # generic gnss time
 # ==========================================================================================
-# TODO Document struct and field
+"""
+    GnssTime(wn, tow_int, tow_frac) <: FineTime
+
+Absolute time reference whose origin is aligned to GPS's.
+
+# Resolution
+It has subsecond resolution down to **femtoseconds** because it uses `Float64` to represent
+decimal part of the current second.
+WN does not rollover (it keeps counting since GPST₀ continuously.)
+"""
 struct GnssTime <: FineTime
+    "Week number as complete weeks elapsed since GPST₀."
     wn::Int
+    "Time of week as complete seconds since the beginning of week."
     tow_int::Int
+    "Seconds elapsed since the previous integer second."
     tow_frac::Float64
 
     function GnssTime(wn, tow_int, tow_frac)
@@ -41,6 +53,16 @@ end
 # convenience constructors
 # ==========================================================================================
 # Convenience conversion
+"""
+    GnssTime(t::T)
+
+Convert from time reference of type `T` to `GnssTime`.
+
+Valid types are:
+- `T::SystemTime`
+- `T::Date`
+- `T::DateTime`
+"""
 GnssTime(t::Union{SystemTime, Date, DateTime}) = Base.convert(GnssTime, t)
 
 # UTC
@@ -53,11 +75,16 @@ function DateTime(t::GnssTime, ::Type{UTC})
     dt = DateTime(t)
     return dt - Second(Int(LeapSeconds.offset_tai_utc(dt)) - LEAP_SECOND_TAI_OFFSET)
 end
+Date(t::GnssTime, ::Type{UTC}) = Date(DateTime(t, UTC))
+
+"""
+    GnssTime(t::DateTime, UTC)
+
+Convert from `DateTime` assumming  that `t` is a UTC time.
+"""
 function GnssTime(t::DateTime, ::Type{UTC})
     s_offset = Int(LeapSeconds.offset_tai_utc(t)) - LEAP_SECOND_TAI_OFFSET
     return GnssTime(t + Second(s_offset))
 end
-Date(t::GnssTime, ::Type{UTC}) = Date(DateTime(t, UTC))
-
 # I think asserting Date as UTC should be unsupported, it does not make sense.
 # GnssTime(t::Date, ::Type{UTC}) = GnssTime(t)

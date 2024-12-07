@@ -5,6 +5,18 @@
 		}
 	],
 	"settings": {
-		"julia.environmentPath": "/home/fcpv/.julia/environments/gnss"
-	}
+		"julia.environmentPath": "/home/fcpv/.julia/environments/gnss",
+		"[markdown]": {
+			"editor.unicodeHighlight.ambiguousCharacters": true,
+			"editor.unicodeHighlight.invisibleCharacters": true,
+			"diffEditor.ignoreTrimWhitespace": false,
+			"editor.wordWrap": "on",
+			"editor.quickSuggestions": {
+				"comments": "off",
+				"strings": "off",
+				"other": "off"
+			},
+			"editor.rulers": [80]
+		},
+	},
 }
