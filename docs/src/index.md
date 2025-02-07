@@ -2,19 +2,22 @@
 CurrentModule = GnssDates
 ```
 
-# GnssDates
+# [GnssDates.jl](@id index)
 
-Documentation for [GnssDates](https://github.com/nandoconde/GnssDates.jl).
+_GNSS datetime references for Julia._
 
-## Contributors
+A package for representing and manipulating dates and times from Global Navigation Satellite Systems (GNSS) and converting them to human-readable dates and times.
 
-```@raw html
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+## Package Features
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
+- GNSS timescales
+- Time intervals
+- Conversion to/from [`Dates`](https://docs.julialang.org/en/v1/stdlib/Dates/)
+- Operations with datetimes and intervals.
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-```
+## Manual Outline
+
+- [Timescales](@ref timescales)
+- [Time intervals](@ref timeintervals)
+- [Operations](@ref operations)
+- [Integration with `Dates`](@ref datesintegration)

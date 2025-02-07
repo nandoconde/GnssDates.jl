@@ -7,28 +7,41 @@
 [![Lint workflow Status](https://github.com/nandoconde/GnssDates.jl/actions/workflows/Lint.yml/badge.svg?branch=main)](https://github.com/nandoconde/GnssDates.jl/actions/workflows/Lint.yml?query=branch%3Amain)
 [![Docs workflow Status](https://github.com/nandoconde/GnssDates.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/nandoconde/GnssDates.jl/actions/workflows/Docs.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/nandoconde/GnssDates.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/nandoconde/GnssDates.jl)
-[![DOI](https://zenodo.org/badge/DOI/FIXME)](https://doi.org/FIXME)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
-[![All Contributors](https://img.shields.io/github/all-contributors/nandoconde/GnssDates.jl?labelColor=5e1ec7&color=c0ffee&style=flat-square)](#contributors)
 [![BestieTemplate](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JuliaBesties/BestieTemplate.jl/main/docs/src/assets/badge.json)](https://github.com/JuliaBesties/BestieTemplate.jl)
 
-## How to Cite
+## Installation
 
-If you use GnssDates.jl in your work, please cite using the reference given in [CITATION.cff](https://github.com/nandoconde/GnssDates.jl/blob/main/CITATION.cff).
+```julia-repl
+julia> using Pkg
+
+julia> Pkg.add("GnssDates")
+```
+
+## Quick start
+
+[Check the documentation](@ref index) for
+the complete API and more examples.
+
+```julia-repl
+julia> using GnssDates
+
+julia> gst = GST(967, 432000)
+GST(967, 432000)
+
+julia> gpst = GPST(1991, 432127)
+GPST(1991, 432127)
+
+julia> gpst - gst
+CoarseTimeDelta(0, 127)
+
+julia> gst + FineTimeDelta(0, 127, 0.7774)
+GnssTime(1991, 432127, 0.7774)
+
+julia>  gst < gpst
+true
+```
 
 ## Contributing
 
-If you want to make contributions of any kind, please first that a look into our [contributing guide directly on GitHub](docs/src/90-contributing.md) or the [contributing page on the website](https://nandoconde.github.io/GnssDates.jl/dev/90-contributing/)
-
----
-
-### Contributors
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+If you want to make contributions of any kind, please first take a look into the
+[contributing page on the docs](@ref contributing)

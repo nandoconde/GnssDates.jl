@@ -3,5 +3,11 @@ uuid = "e3dbbf4c-e8f6-588c-bc4a-4c34f15afb57"
 authors = ["nandoconde <fernando.conde.pumpido@outlook.com>"]
 version = "0.1.0"
 
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+LeapSeconds = "2f5f767c-a11e-5269-a972-637d4b97c32d"
+
 [compat]
+Dates = "1.11.0"
+LeapSeconds = "1.1.0"
 julia = "1.11"
