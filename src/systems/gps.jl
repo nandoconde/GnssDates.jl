@@ -33,7 +33,7 @@ end
 # ==========================================================================================
 # unchecked conversion (GnssTime)
 # NOTE
-#   This discards the fractional part direclty without checking first.
+#   This discards the fractional part directly without checking first.
 Base.convert(::Type{T}, t::GnssTime) where {T <: GPST} = GPST(t.wn, t.tow_int)
 Base.convert(::Type{T}, t::GPST) where {T <: GnssTime} = GnssTime(t.wn, t.tow, 0.0)
 

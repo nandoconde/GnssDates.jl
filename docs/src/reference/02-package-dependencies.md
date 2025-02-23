@@ -1,6 +1,6 @@
 # Package dependencies
 
-This package depends direclty only on one package outside of the standard
+This package depends directly only on one package outside of the standard
 library, [LeapSeconds.jl](https://github.com/JuliaTime/LeapSeconds.jl). It would
 be awesome to keep it this way to maximize compatibility with past and future
 Julia versions.
