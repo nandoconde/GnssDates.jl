@@ -22,3 +22,4 @@ and this project adheres to
 - Add devdocs
 - Add tests
 - Add doctests
+- Add formatting with [`Runic.jl](https://github.com/fredrikekre/Runic.jl)
