@@ -5,7 +5,6 @@
 		}
 	],
 	"settings": {
-		"julia.environmentPath": "/home/fcpv/.julia/environments/gnss",
 		"[markdown]": {
 			"editor.unicodeHighlight.ambiguousCharacters": true,
 			"editor.unicodeHighlight.invisibleCharacters": true,
@@ -18,5 +17,6 @@
 			},
 			"editor.rulers": [80]
 		},
+		"julia.environmentPath": "/home/nandoconde/Desktop/nandoconde/GnssDates.jl",
 	},
 }
