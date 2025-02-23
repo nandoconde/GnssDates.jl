@@ -12,7 +12,7 @@ collaboration process.
 
 We are completely open to new ideas and features, but the core of this package
 is providing time management for other GNSS packages in a way that feels both
-minimal but beature complete. This means that any new feature should minimize:
+minimal but feature complete. This means that any new feature should minimize:
 
 - Adding dependencies
 - Breaking old code

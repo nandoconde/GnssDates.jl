@@ -24,47 +24,6 @@ before merging. If you do not feel confident installing these tools or you would
 rather not do it, do not worry about it, and we will download your branch and
 submit a PR to it with the formatted code before merging.
 
-### EditorConfig
-
-Install a plugin on your editor to use [EditorConfig](https://editorconfig.org).
-This will ensure that your editor is configured with important formatting
-settings.
-
-We use [https://pre-commit.com](https://pre-commit.com) to run the linters and
-formatters. In particular, the Julia code is formatted using
-[JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl), so please
-install it globally first:
-
-```julia-repl
-julia> # Press ]
-pkg> activate
-pkg> add JuliaFormatter
-```
-
-### pre-commit
-
-To install `pre-commit`, we recommend using [pipx](https://pipx.pypa.io) as
-follows:
-
-```bash
-# Install pipx following the link
-pipx install pre-commit
-```
-
-With `pre-commit` installed, activate it as a pre-commit hook:
-
-```bash
-pre-commit install
-```
-
-To run the linting and formatting manually, enter the command below:
-
-```bash
-pre-commit run -a
-```
-
-**Now, you can only commit if all the pre-commit tests pass**.
-
 ## Testing
 
 As with most Julia packages, you can just open Julia in the repository folder,
@@ -128,7 +87,8 @@ the issue first, so we can properly discuss the changes.
     [The Utopic Git History](https://blog.esciencecenter.nl/the-utopic-git-history-d44b81c09593)).
 
 - Make sure the tests pass.
-- Make sure the pre-commit tests pass.
+- Make sure the files have been formatted with the latest [`Runic.jl`](https://github.com/fredrikekre/Runic.jl)
+  release.
 - Fetch any `main` updates from upstream and rebase your branch, if necessary:
 
   ```bash
@@ -184,3 +144,4 @@ Check on <https://github.com/nandoconde/GnssDates.jl/releases>
 - After that runs, the
 [stable docs](@ref index) should be
 updated. Check them and look for the version number.
+
