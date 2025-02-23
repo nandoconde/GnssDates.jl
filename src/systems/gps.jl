@@ -35,7 +35,7 @@ end
 # NOTE
 #   This discards the fractional part direclty without checking first.
 Base.convert(::Type{T}, t::GnssTime) where {T <: GPST} = GPST(t.wn, t.tow_int)
-Base.convert(::Type{T}, t::GPST) where {T <: GnssTime} = GnssTime(t.wn, t.tow, 0.0)    
+Base.convert(::Type{T}, t::GPST) where {T <: GnssTime} = GnssTime(t.wn, t.tow, 0.0)
 
 
 # ==========================================================================================

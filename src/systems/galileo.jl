@@ -34,10 +34,10 @@ end
 # NOTE
 #   This discards the fractional part directly without checking first.
 function Base.convert(::Type{T}, t::GnssTime) where {T <: GST}
-    GST(t.wn - GAL_WEEK_OFFSET, t.tow_int)
+    return GST(t.wn - GAL_WEEK_OFFSET, t.tow_int)
 end
 function Base.convert(::Type{T}, t::GST) where {T <: GnssTime}
-    GnssTime(t.wn + GAL_WEEK_OFFSET, t.tow, 0.0)
+    return GnssTime(t.wn + GAL_WEEK_OFFSET, t.tow, 0.0)
 end
 
 

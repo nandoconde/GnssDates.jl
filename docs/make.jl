@@ -23,7 +23,7 @@ makedocs(;
         highlights = ["yaml", "toml"],
         ansicolor = true,
         size_threshold_ignore = ["release-notes.md"],
-        ),
+    ),
     authors = "Fernando Conde-Pumpido",
     linkcheck = true,
     doctest = :true,
@@ -43,12 +43,13 @@ makedocs(;
             "reference/02-package-dependencies.md",
         ],
         "Developers" => String[
-            "developers/01-internals.md",    
+            "developers/01-internals.md",
             "developers/02-contributing.md",
             "developers/03-devdocs.md",
             "developers/04-checklists.md",
         ],
-        "release-notes.md"],
+        "release-notes.md",
+    ],
 )
 
 deploydocs(;

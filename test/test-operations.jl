@@ -69,7 +69,7 @@ end
 
 @testset "TimeDelta equality" begin
     # self, coarse
-    ctd1 = CoarseTimeDelta(4, 197)  
+    ctd1 = CoarseTimeDelta(4, 197)
     ctd2 = CoarseTimeDelta(4, 198)
     @test ctd1 == ctd1
     @test ctd1 != ctd2
@@ -87,7 +87,7 @@ end
 
 @testset "TimeDelta isless" begin
     # self, coarse
-    ctd1 = CoarseTimeDelta(4, 197)  
+    ctd1 = CoarseTimeDelta(4, 197)
     ctd2 = CoarseTimeDelta(4, 198)
     @test ctd1 < ctd2
     @test ctd2 > ctd1
@@ -108,7 +108,7 @@ end
     @test ctd1 <= ftd1
     @test ftd1 <= ctd1
     @test ctd1 >= ftd1
-    @test ftd1 >= ctd1   
+    @test ftd1 >= ctd1
 end
 
 

@@ -51,7 +51,7 @@ function Base.convert(::Type{T}, t::SystemTime) where {T <: SystemTime}
     return convert(T, convert(GnssTime, t))
 end
 
-# to/from Date and DateTime or 
+# to/from Date and DateTime or
 function Base.convert(::Type{T}, t::SystemTime) where {T <: Union{Date, DateTime}}
     return convert(T, convert(GnssTime, t))
 end
