@@ -1,9 +1,11 @@
-# CompatHelper v3.5.0
+# CompatHelper v3.12.0
+#
+#   Contents of this file come from CompatHelper.jl repo:
+#   https://github.com/JuliaRegistries/CompatHelper.jl/blob/master/.github/workflows/CompatHelper.yml
 name: CompatHelper
-
 on:
   schedule:
-    - cron: 0 0 * * * # Every day at 00:00 UTC
+    - cron: 0 0 * * *
   workflow_dispatch:
 
 permissions:
@@ -21,11 +23,9 @@ jobs:
       - name: Install Julia, but only if it is not already available in the PATH
         uses: julia-actions/setup-julia@v2
         with:
-          version: "1"
+          version: '1'
           arch: ${{ runner.arch }}
         if: steps.julia_in_path.outcome != 'success'
-      - name: Use Julia cache
-        uses: julia-actions/cache@v2
       - name: "Add the General registry via Git"
         run: |
           import Pkg
@@ -48,4 +48,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMPATHELPER_PRIV: ${{ secrets.DOCUMENTER_KEY }}
-          # COMPATHELPER_PRIV: ${{ secrets.COMPATHELPER_PRIV }}
