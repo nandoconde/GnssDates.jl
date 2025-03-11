@@ -55,6 +55,6 @@ makedocs(;
 deploydocs(;
     repo = "github.com/nandoconde/GnssDates.jl.git",
     target = "build",
-    devbranch="main",
-    branch="gh-pages",
+    devbranch = "main",
+    branch = "gh-pages",
 )
