@@ -2,8 +2,7 @@
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://nandoconde.github.io/GnssDates.jl/stable)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://nandoconde.github.io/GnssDates.jl/dev)
-[![Build Status](https://github.com/nandoconde/GnssDates.jl/workflows/Test/badge.svg)](https://github.com/nandoconde/GnssDates.jl/actions)
-[![Coverage](https://codecov.io/gh/nandoconde/GnssDates.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/nandoconde/GnssDates.jl)
+[![codecov](https://codecov.io/gh/nandoconde/GnssDates.jl/graph/badge.svg?token=ODZYAYBP10)](https://codecov.io/gh/nandoconde/GnssDates.jl)
 
 ## Installation
 
