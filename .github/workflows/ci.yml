@@ -53,6 +53,7 @@ jobs:
                   files: lcov.info
                   token: ${{ secrets.CODECOV_TOKEN }}
                   fail_ci_if_error: true
+                  verbose: true
     runic:
         name: Runic formatting
         runs-on: ubuntu-latest
