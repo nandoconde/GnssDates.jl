@@ -6,8 +6,10 @@ version = "0.1.0"
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 LeapSeconds = "2f5f767c-a11e-5269-a972-637d4b97c32d"
+PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 
 [compat]
 Dates = "^1.10"
 LeapSeconds = "^1.1.0"
+PrecompileTools = "1.2.1"
 julia = "^1.10"

@@ -29,4 +29,7 @@ include("timedelta.jl")
 include("systemtime.jl")
 include("operations.jl")
 
+# precompile package
+include("precompile.jl")
+
 end
