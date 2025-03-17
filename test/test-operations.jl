@@ -189,6 +189,22 @@ end
 # ==========================================================================================
 # subtraction
 # ==========================================================================================
+@testset "Time differences" begin
+    gst0 = GST(1991 - GAL_WEEK_OFFSET + 1, 432010)
+    gpst0 = GPST(gst0)
+    gnsst0 = GnssTime(gpst0)
+    gst1 = GST(1991 - GAL_WEEK_OFFSET, 432010)
+    gpst1 = GPST(gst1)
+    gnsst1 = GnssTime(gpst1)
+    res0 = CoarseTimeDelta(1, 0)
+    res1 = FineTimeDelta(1, 0, 0)
+    # try all combinations
+    @test gnsst0 - gnsst1 == res1
+    @test gst0 - gnsst1 == res0
+    @test gnsst0 - gpst1 == res0
+    @test gpst0 - gst1 == res0
+end
+
 @testset "TimeDelta - SystemTime" begin
     gst0 = GST(1991 - GAL_WEEK_OFFSET + 1, 432010)
     gpst0 = GPST(gst0)
@@ -256,4 +272,22 @@ end
     ftd4 = FineTimeDelta(-6, -604000, -0.25)
     @test ctd1 - ftd2 == ftd4
     @test ftd1 - ctd2 == ftd4 + CoarseTimeDelta(0, 1)
+end
+
+# ==========================================================================================
+# integer scaling
+# ==========================================================================================
+@testset "Integer scaling" begin
+    # by any integer
+    ctd = CoarseTimeDelta(-2, 400 - SECONDS_IN_WEEK)
+    ftd = FineTimeDelta(-2, 401 - SECONDS_IN_WEEK, -0.25)
+    resc = CoarseTimeDelta(-2 * 4, 4 * (400 - SECONDS_IN_WEEK))
+    resf = FineTimeDelta(-2 * 6, (401 - SECONDS_IN_WEEK) * 6, -0.25 * 6)
+    @test 4 * ctd == resc
+    @test 6 * ftd == resf
+    # by -1 via subtraction
+    ctd2 = CoarseTimeDelta(0, SECONDS_IN_WEEK - 1)
+    ftd2 = FineTimeDelta(1, 1, 0)
+    @test -ctd2 == CoarseTimeDelta(-1, 1)
+    @test -ftd2 == FineTimeDelta(-2, SECONDS_IN_WEEK - 1, 0)
 end
