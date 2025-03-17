@@ -202,6 +202,7 @@ end
     @test gnsst0 - gnsst1 == res1
     @test gst0 - gnsst1 == res0
     @test gnsst0 - gpst1 == res0
+    @test gst0 - gst1 == res0
     @test gpst0 - gst1 == res0
 end
 
