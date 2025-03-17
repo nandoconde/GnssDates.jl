@@ -14,7 +14,7 @@ julia> Pkg.add("GnssDates")
 
 ## Quick start
 
-[Check the documentation](@ref index) for
+[Check the documentation](https://nandoconde.github.io/GnssDates.jl/dev/) for
 the complete API and more examples.
 
 ```julia-repl
@@ -39,4 +39,4 @@ true
 ## Contributing
 
 If you want to make contributions of any kind, please first take a look into the
-[contributing page on the docs](@ref contributing)
+[contributing page on the docs](https://nandoconde.github.io/GnssDates.jl/dev/developers/02-contributing/)
