@@ -1,66 +1,71 @@
 # ==========================================================================================
-# generic galileo time
+# galileo time
 # ==========================================================================================
 """
-    GST(wn, tow) <: CoarseTime
-
-Coarse time reference as disseminated by Galileo.
+Generic function related to conversion to/from Galileo Time reference.
 
 # Resolution
-It has integer-second resolution because TOW is represented by an `Int64`.
 WN does not rollover (it keeps counting since GST₀ continuously.)
 
+# Relationship with UTC and TAI
+
+At 2025-07-16, relationship between UTC, TAI and GST is:
+```
+    <------------------leap seconds----------------->
+    <--------var--------><--------19 seconds-------->
+  UTC                  GST                         TAI
+15:56:23            15:56:41                     15:57:00
+```
+where the difference between GST and TAI is fixed by 19 seconds, and the difference
+between GST and UTC depends on the currently introduced leap seconds.
+
 # More info
-Check
-[Time References in GNSS](https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS)
+Check [Time References in GNSS](https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS)
 for more info.
 """
-struct GST <: CoarseTime
-    "Week number as complete weeks elapsed since GST₀."
-    wn::Int
-    "Time of week as complete seconds since the beginning of week."
-    tow::Int
+function GST end
 
-    function GST(wn, tow)
-        wn_, tow_ = _canon_coarsetime(Int(wn), Int(tow))
-        return new(wn_, tow_)
+
+"""
+    GST(wn, tow)
+
+Create GnssTimeCoarse from WN and TOW reference disseminated by Galileo.
+
+# Arguments
+- `wn::Int64`: Galileo Week Number
+- `tow::Int64`: Galileo Time of Week
+"""
+function GST(wn, tow::Integer)
+    return GnssTimeCoarse(wn + GAL_WEEK_OFFSET, tow)
+end
+
+"""
+    GST(wn, tow, frac)
+
+Create GnssTime from WN and TOW reference disseminated by Galileo, plus fractional part of
+seconds.
+
+# Arguments
+- `wn::Integer`: Galileo Week Number
+- `tow::Integer`: Galileo Time of Week
+- `frac`: fractional part of a second
+"""
+GST(wn, tow, frac) = GnssTime(wn + GAL_WEEK_OFFSET, tow, frac)
+
+function GST(wn, tow::AbstractFloat)
+    tow_ = Int(floor(tow))
+    return GnssTime(wn + GAL_WEEK_OFFSET, tow_, tow - tow_)
+end
+
+# ==========================================================================================
+# reverse GST retrieval
+# ==========================================================================================
+function wntow(::typeof(GST), t::AbstractGnssTime, rollover::Bool)
+    wn_gal = t.wn - GAL_WEEK_OFFSET
+    tow_gal = t.tow
+    if rollover
+        return (wn_gal % GAL_WEEK_NUMBER_ROLLOVER, tow_gal)
+    else
+        return (wn_gal, tow_gal)
     end
 end
-
-
-# ==========================================================================================
-# conversion
-# ==========================================================================================
-# NOTE
-#   This discards the fractional part directly without checking first.
-function Base.convert(::Type{T}, t::GnssTime) where {T <: GST}
-    return GST(t.wn - GAL_WEEK_OFFSET, t.tow_int)
-end
-function Base.convert(::Type{T}, t::GST) where {T <: GnssTime}
-    return GnssTime(t.wn + GAL_WEEK_OFFSET, t.tow, 0.0)
-end
-
-
-# ==========================================================================================
-# convenience constructors
-# ==========================================================================================
-# Convenience conversion
-"""
-    GST(t::T)
-
-Convert from time reference of type `T` to `GST`.
-
-Valid types are:
-- `T::SystemTime`
-- `T::Date`
-- `T::DateTime`
-"""
-GST(t::Union{Date, DateTime, SystemTime}) = Base.convert(GST, t)
-
-# Convenience conversion (UTC)
-"""
-    GST(t::DateTime, UTC)
-
-Convert from `DateTime` assumming that `t` is a UTC time.
-"""
-GST(t::DateTime, ::Type{UTC}) = GST(GnssTime(t, UTC))

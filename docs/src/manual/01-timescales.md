@@ -1,85 +1,197 @@
-# [Timescales](@id timescales)
+# [GNSS Time](@id gnsstime)
 
-Timescales are the means by which GNSS constellations keep the track of current
-time.
+GNSS Time represents a timescale that can be used to keep track of time for GNSS constellations.
 
 ## Type hierarchy
 
-All timescale types are subtypes of an abstract `SystemTime`. The precision of
-the timescale is reflected by another two abstract subtypes from `SystemTime`:
-`CoarseTime` and `FineTime`.
+All GNSS time types are subtypes of an abstract `AbstractGnssTime`. The precision of
+the timescale gives raise to two concrete subtypes: `GnssTime` and `GnssTimeCoarse`.
 
-## System implementations
+All `AbstractGnssTime` implementations contain at least two fields:
 
-The basic times associated to each constellation are `CoarseTime`s.
-These include:
+- `wn::Int`: weeks elapsed since the origin of the continuous timescale, which is GPST₀.
+- `tow::Int`: seconds elapsed since the beginning of the week, which is aligned to GPST's and GST's.
 
-- Galileo: `GST`
-- GPS: `GPST`
-- Others will come.
+To retrieve these fields as a tuple, check the function [`wntow`](#coarse-time-serialization---wntow).
+
+### High-resolution GNSS time
+
+`GnssTime` can be used to represent time in a GNSS constellation down to femtoseconds
+without loss of precision. It has another field, `frac` to track sub-second time. `GnssTime` contains:
+
+- `wn::Int`: weeks elapsed since the origin of the continuous timescale, which is GPST₀.
+- `tow::Int`: seconds elapsed since the beginning of the week, which is aligned to GPST's and GST's.
+- `frac::Float64`: seconds elapsed since the last second. Strictly in the `[0.0, 1.0)` interval.
 
 ```jldoctest timescales
 julia> using GnssDates
 
-julia> galt = GST(967, 432000)
-GST(967, 432000)
+julia> gnsst = GnssTime(2375, 496170, 0.75)
+GnssTime(2375, 496170, 0.75)
 
-julia> galt.wn
-967
+julia> gnsst.wn
+2375
 
-julia> galt.tow
-432000
+julia> gnsst.tow
+496170
 
-julia> gpst = GPST(1991, 432000)
-GPST(1991, 432000)
+julia> gnsst.frac
+0.75
 ```
 
-## High-resolution time
+### Coarse-resolution GNSS time
 
-The only provided subtype of `FineTime` is `GnssTime`. It is aligned in WN
-and TOW with GPS time, but also includes the decimal part of the current
-second as a `Float64` between `0.0` (included) and `1.0` (not included).
+For many applications, it is only important to keep track of time down to seconds. In this case,
+`GnssTimeCoarse` is enough. It contains:
+
+- `wn::Int`: weeks elapsed since the origin of the continuous timescale, which is GPST₀.
+- `tow::Int`: seconds elapsed since the beginning of the week, which is aligned to GPST's and GST's.
 
 ```jldoctest timescales
-julia> gnsst = GnssTime(967, 432000, 0.0)
-GnssTime(967, 432000, 0.0)
+julia> gnsstc = GnssTimeCoarse(2375, 496170)
+GnssTimeCoarse(2375, 496170)
+
+julia> gnsstc.wn
+2375
+
+julia> gnsstc.tow
+496170
 ```
 
-## Timescale domain
+## GNSS systems
 
-These types can also represent times beyond the beginning of the timescale,
-using always positve TOW but negative WN.
+This package includes functions to build `GnssTime` or `GnssTimeCoarse` from the timestamps of
+different constellations:
 
-The WN is not limited to that disseminated by the SIS. Just like RINEX files,
-it can count beyond the values that allow the usual 10 or 12 bits allocated
-for them in the SIS.
+- GPS: `GPST`
+- Galileo: `GST`
+- BeiDou: `BDT`
+- GLONASS: `GLONASST`
+- Others will come.
+
+### GPS
+
+GPS timestamps are usually represented as a Week Number and a Time of Week. Thus, to construct
+a `GnssTime` or a `GnssTimeCoarse` from them, `GPST` is provided with them:
 
 ```jldoctest timescales
-julia> GnssTime(0, -GnssDates.SECONDS_IN_WEEK + 75, 0.5)
-GnssTime(-1, 75, 0.5)
+julia> gpstc = GPST(2375, 496170)
+GnssTimeCoarse(2375, 496170)
 
-julia> GST(966, 432000 + GnssDates.SECONDS_IN_WEEK)
-GST(967, 432000)
+julia> (gpstc.wn, gpstc.tow)
+(2375, 496170)
 
-julia> GPST(1992, 432000 - GnssDates.SECONDS_IN_WEEK)
-GPST(1991, 432000)
+julia> gpst = GPST(2375, 496170, 0.5) # same as GPST(2375, 496170.5)
+GnssTime(2375, 496170, 0.5)
+
+julia> (gpst.wn, gpst.tow)
+(2375, 496170)
+
+julia> gpst.frac
+0.5
 ```
 
-## Conversion between `SystemTime`s
+### Galileo
 
-Conversion between these types works as expected, and over/underflown values
-are automatically rolled over/under and converted to the appropriate times.
+Galileo timestamps are usually represented as a Week Number and a Time of Week. Thus, to construct
+a `GnssTime` or a `GnssTimeCoarse` from them, `GST` is provided with them:
 
 ```jldoctest timescales
-julia> gst = GST(967, 432000)
-GST(967, 432000)
+julia> gstc = GST(1351, 496170)
+GnssTimeCoarse(2375, 496170)
 
-julia> gpst = GPST(gst)
-GPST(1991, 432000)
+julia> (gstc.wn, gstc.tow)
+(2375, 496170)
 
-julia> gnsst = GnssTime(gpst)
-GnssTime(1991, 432000, 0.0)
+julia> gst = GST(1351, 496170, 0.5) # same as GST(1351, 496170.5)
+GnssTime(2375, 496170, 0.5)
 
-julia> GST(gnsst)
-GST(967, 432000)
+julia> (gst.wn, gst.tow)
+(2375, 496170)
+
+julia> gst.frac
+0.5
+```
+
+### BeiDou
+
+BeiDou timestamps are usually represented as a Week Number and a Time of Week. Thus, to construct
+a `GnssTime` or a `GnssTimeCoarse` from them, `BDT` is provided with them:
+
+```jldoctest timescales
+julia> bdtc = BDT(1019, 496156)
+GnssTimeCoarse(2375, 496170)
+
+julia> (bdtc.wn, bdtc.tow)
+(2375, 496170)
+
+julia> bdt = BDT(1019, 496156, 0.5) # same as BDT(1019, 496156.5)
+GnssTime(2375, 496170, 0.5)
+
+julia> (bdt.wn, bdt.tow)
+(2375, 496170)
+
+julia> bdt.frac
+0.5
+```
+
+### GLONASS
+
+GLONASS timestamps are usually represented as datetimes in Moscow Time (UTC+3). Thus, to construct
+a `GnssTime` or a `GnssTimeCoarse` from them, `GLONASST` must be provided with a `DateTime`
+representing Moscow Time:
+
+!!! warning "Caveat!"
+
+    Since GLONASS timestamps are always a `DateTime` objects, they are automatically
+    converted to `GnssTime`.
+
+    To retrieve a `GnssTimeCoarse` it must be converted after construction.
+
+```jldoctest timescales
+julia> glonasst = GLONASST(DateTime(2025, 07, 18, 20, 49, 12))
+GnssTime(2375, 496170, 0.0)
+
+julia> (glonasst.wn, glonasst.tow)
+(2375, 496170)
+
+julia> glonasst.frac
+0.0
+
+julia> glonasstc = GnssTimeCoarse(glonasst)
+GnssTimeCoarse(2375, 496170)
+
+julia> (glonasstc.wn, glonasstc.tow)
+(2375, 496170)
+```
+
+To convert back to a GLONASS timestamp in Moscow Time, convert from an `AbstractGnssTime` to `DateTime`
+and manually add 3 hours.
+
+## Coarse time serialization - `wntow`
+
+Most navigation systems (with the notable exception of GLONASS) define a tuple, (WN, TOW),
+which they use to represent coarse timestamps (integer-second resolution).
+
+The function `wntow` is used to retrieve this tuple from an `AbstractGnssTime` for any
+navigation system.
+
+```jldoctest timescales
+julia> (gnsstc.wn, gnsstc.tow)
+(2375, 496170)
+
+julia> wntow(GnssTime, gnsstc)
+(2375, 496170)
+
+julia> wntow(GnssTimeCoarse, gnsstc)
+(2375, 496170)
+
+julia> wntow(GPST, gnsstc) # GnssTime origin matches GPS's
+(2375, 496170)
+
+julia> julia> wntow(GST, gnsstc) # There is a 1024-week offset between GPST and GST
+(1351, 496170)
+
+julia> julia> wntow(BDT, gnsstc) # There is a 136-week and 14-second offset between GPST and BDT
+(1019, 496156)
 ```

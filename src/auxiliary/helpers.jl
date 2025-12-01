@@ -2,7 +2,7 @@
 # time reference normalization
 # ==========================================================================================
 """
-    _canon_coarsetime(wn, tow) -> Tuple{Int,Int}
+    _canon_coarsetime(wn, tow)::Tuple{Int,Int}
 
 Normalize a (wn, tow) tuple following that:
 - `tow` ∈ [0, `SECONDS_IN_WEEK`)
@@ -15,7 +15,7 @@ end
 
 
 """
-    _canon_finetime(wn, tow, towf) -> Tuple{Int,Int,Float64}
+    _canon_finetime(wn, tow, towf)::Tuple{Int,Int,Float64}
 
 Normalize a (wn, tow, towf) tuple following that:
 
@@ -35,7 +35,7 @@ end
 # time interval normalization
 # ==========================================================================================
 """
-    _canon_coarsedelta(w, s) -> Tuple{Int,Int}
+    _canon_coarsedelta(w, s)::Tuple{Int,Int}
 
 Normalize a (w, s) tuple following that:
 - `s` ∈ [0, `SECONDS_IN_WEEK`) if it is a positive interval
@@ -56,7 +56,7 @@ end
 
 
 """
-    _canon_finedelta(w, s, sf) -> Tuple{Int,Int}
+    _canon_finedelta(w, s, sf)::Tuple{Int,Int}
 
 Normalize a (w, s, sf) tuple following that:
 - `s` ∈ [0, `SECONDS_IN_WEEK`) if it is a positive interval

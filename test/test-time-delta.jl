@@ -1,60 +1,28 @@
-import Dates
-import Base
-
-@testset "timedelta.jl (coarse)" begin
-    # check exports and documentation of public names
-    # TODO
-    # nominal
-    ctd = CoarseTimeDelta(1991, 441600)
-    @test ctd.weeks == 1991
-    @test ctd.seconds == 441600
-    # overflow, positive
-    ctd_op = CoarseTimeDelta(0, GnssDates.SECONDS_IN_WEEK + 1)
-    @test ctd_op == CoarseTimeDelta(1, 1)
-    # underflow, positive
-    ctd_up = CoarseTimeDelta(1, -1)
-    @test ctd_up == CoarseTimeDelta(0, GnssDates.SECONDS_IN_WEEK - 1)
-    # overflow, negative
-    ctd_on = CoarseTimeDelta(-1, 1)
-    @test ctd_on == CoarseTimeDelta(0, -GnssDates.SECONDS_IN_WEEK + 1)
-    # underflow, negative
-    ctd_un = CoarseTimeDelta(-3, -GnssDates.SECONDS_IN_WEEK - 1)
-    @test ctd_un == CoarseTimeDelta(-4, -1)
+@testset "GnssTime constructors" begin
+    # setup
+    w = 653
+    s = 238743
+    f = 0.0
+    td_0 = TimeDelta(w, s, 0.0)
+    td_1 = TimeDelta(w + 1, s + 1, f)
+    tdc_0 = TimeDeltaCoarse(w, s)
+    tdc_1 = TimeDeltaCoarse(w + 1, s + 1)
+    # test
+    @test td_0 === TimeDelta(Int16(w), Int32(s), Float16(f))
+    @test td_1 === TimeDelta(w, s + SECONDS_IN_WEEK, f + 1)
+    @test tdc_0 === TimeDeltaCoarse(Int16(w), Int32(s))
+    @test tdc_1 === TimeDeltaCoarse(w, s + SECONDS_IN_WEEK + 1)
 end
 
-@testset "timedelta.jl (fine)" begin
-    # Fine (nominal and corner cases)
-    ftd = FineTimeDelta(1991, 441600, 0.75)
-    @test ftd.weeks == 1991
-    @test ftd.seconds == 441600
-    @test ftd.seconds_frac == 0.75
-    # overflow, positive
-    ctd_op = CoarseTimeDelta(0, GnssDates.SECONDS_IN_WEEK + 1)
-    @test ctd_op == CoarseTimeDelta(1, 1)
-    # underflow, positive
-    ctd_up = CoarseTimeDelta(1, -1)
-    @test ctd_up == CoarseTimeDelta(0, GnssDates.SECONDS_IN_WEEK - 1)
-    # overflow, negative
-    ctd_on = CoarseTimeDelta(-1, 1)
-    @test ctd_on == CoarseTimeDelta(0, -GnssDates.SECONDS_IN_WEEK + 1)
-    # underflow, negative
-    ctd_un = CoarseTimeDelta(-3, -GnssDates.SECONDS_IN_WEEK - 1)
-    @test ctd_un == CoarseTimeDelta(-4, -1)
-end
-
-@testset "timedelta.jl (conversion)" begin
-    ctd = CoarseTimeDelta(1991, 441600)
-    ftd = FineTimeDelta(1991, 441600, 0.75)
-    @test Base.convert(CoarseTimeDelta, ftd) == ctd
-    @test Base.convert(FineTimeDelta, ctd) == FineTimeDelta(1991, 441600, 0.0)
-end
-
-@testset "timedelta.jl (convenience constructors)" begin
-    ctd = CoarseTimeDelta(1991, 441600)
-    ftd = FineTimeDelta(1991, 441600, 0.75)
-    ftd_ = FineTimeDelta(1991, 441600, 0.0)
-    @test CoarseTimeDelta(ctd) == ctd
-    @test CoarseTimeDelta(ftd) == ctd
-    @test FineTimeDelta(ctd) == ftd_
-    @test FineTimeDelta(ftd) == ftd
+@testset "GnssTime to/from GnssTimeCoarse" begin
+    # setup
+    w = 653
+    s = 238743
+    f = 0.5
+    td_0 = TimeDelta(w, s, 0.0)
+    tdc_0 = TimeDeltaCoarse(w, s)
+    @test Base.convert(TimeDeltaCoarse, td_0) === tdc_0
+    @test Base.convert(TimeDelta, tdc_0) === td_0
+    @test TimeDelta(tdc_0) === td_0
+    @test TimeDeltaCoarse(td_0) === tdc_0
 end

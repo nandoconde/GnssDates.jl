@@ -1,15 +1,17 @@
 name = "GnssDates"
 uuid = "e3dbbf4c-e8f6-588c-bc4a-4c34f15afb57"
+version = "0.1.1"
 authors = ["nandoconde <fernando.conde.pumpido@outlook.com>"]
-version = "0.1.0"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+GnssCore = "83d6b3ca-79e9-4c81-b7dd-e779326cdb4c"
 LeapSeconds = "2f5f767c-a11e-5269-a972-637d4b97c32d"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 
 [compat]
 Dates = "^1.10"
+GnssCore = "0.1.1"
 LeapSeconds = "^1.1.0"
 PrecompileTools = "1.2.1"
 julia = "^1.10"

@@ -27,9 +27,9 @@ julia> gpst = GPST(1991, 432127)
 GPST(1991, 432127)
 
 julia> gpst - gst
-CoarseTimeDelta(0, 127)
+TimeDeltaCoarse(0, 127)
 
-julia> gst + FineTimeDelta(0, 127, 0.7774)
+julia> gst + TimeDelta(0, 127, 0.7774)
 GnssTime(1991, 432127, 0.7774)
 
 julia>  gst < gpst

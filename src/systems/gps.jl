@@ -1,63 +1,68 @@
 # ==========================================================================================
-# generic gps time
+# gps time
 # ==========================================================================================
 """
-    GPST(wn, tow) <: CoarseTime
-
-Coarse time reference as disseminated by GPS.
+Generic function related to conversion to/from GPS Time reference.
 
 # Resolution
-It has integer-second resolution because TOW is represented by an `Int64`.
 WN does not rollover (it keeps counting since GPST₀ continuously.)
 
+# Relationship with UTC and TAI
+
+At 2025-07-16, relationship between UTC, TAI and GPST is:
+```
+    <------------------leap seconds----------------->
+    <--------var--------><--------19 seconds-------->
+  UTC                 GPST                         TAI
+15:56:23            15:56:41                     15:57:00
+```
+where the difference between GPST and TAI is fixed by 19 seconds, and the difference
+between GnssTime and UTC depends on the currently introduced leap seconds.
+
 # More info
-Check
-[Time References in GNSS](https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS)
+Check [Time References in GNSS](https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS)
 for more info.
 """
-struct GPST <: CoarseTime
-    "Week number as complete weeks elapsed since GPST₀."
-    wn::Int
-    "Time of week as complete seconds since the beginning of week."
-    tow::Int
+function GPST end
 
-    function GPST(wn, tow)
-        wn_, tow_ = _canon_coarsetime(Int(wn), Int(tow))
-        return new(wn_, tow_)
-    end
+"""
+    GPST(wn, tow)
+
+Create GnssTimeCoarse from WN and TOW reference disseminated by GPS.
+
+# Arguments
+- `wn::Int64`: GPS Week Number
+- `tow::Int64`: GPS Time of Week
+"""
+function GPST(wn, tow::Integer)
+    return GnssTimeCoarse(wn, tow)
 end
 
+"""
+    GPST(wn, tow, frac)
+
+Create GnssTime from WN and TOW reference disseminated by GPS, plus fractional part of
+seconds.
+
+# Arguments
+- `wn::Integer`: GPS Week Number
+- `tow::Integer`: GPS Time of Week
+- `frac`: fractional part of a second
+"""
+GPST(wn, tow, frac) = GnssTime(wn, tow, frac)
+
+function GPST(wn, tow::AbstractFloat)
+    tow_ = Int(floor(tow))
+    return GnssTime(wn, tow_, tow - tow_)
+end
 
 # ==========================================================================================
-# conversion
+# reverse GPST retrieval
 # ==========================================================================================
-# unchecked conversion (GnssTime)
-# NOTE
-#   This discards the fractional part directly without checking first.
-Base.convert(::Type{T}, t::GnssTime) where {T <: GPST} = GPST(t.wn, t.tow_int)
-Base.convert(::Type{T}, t::GPST) where {T <: GnssTime} = GnssTime(t.wn, t.tow, 0.0)
-
-
-# ==========================================================================================
-# convenience constructors
-# ==========================================================================================
-# Convenience conversion
-"""
-    GPST(t::T)
-
-Convert from time reference of type `T` to `GPST`.
-
-Valid types are:
-- `T::SystemTime`
-- `T::Date`
-- `T::DateTime`
-"""
-GPST(t::Union{SystemTime, Date, DateTime}) = Base.convert(GPST, t)
-
-# Convenience conversion (UTC)
-"""
-    GPST(t::DateTime, UTC)
-
-Convert from `DateTime` assumming that `t` is a UTC time.
-"""
-GPST(t::DateTime, ::Type{UTC}) = GPST(GnssTime(t, UTC))
+function wntow(::typeof(GPST), t::AbstractGnssTime, rollover::Bool)
+    if rollover
+        return (t.wn % GPS_WEEK_NUMBER_ROLLOVER, t.tow)
+    else
+        return (t.wn, t.tow)
+    end
+end

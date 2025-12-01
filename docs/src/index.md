@@ -10,14 +10,14 @@ A package for representing and manipulating dates and times from Global Navigati
 
 ## Package Features
 
-- GNSS timescales
+- GNSS timescale
 - Time intervals
 - Conversion to/from [`Dates`](https://docs.julialang.org/en/v1/stdlib/Dates/)
-- Operations with datetimes and intervals.
+- Operations with GNSS time and intervals.
 
 ## Manual Outline
 
-- [Timescales](@ref timescales)
+- [GNSS Time](@ref gnsstime)
 - [Time intervals](@ref timeintervals)
 - [Operations](@ref operations)
 - [Integration with `Dates`](@ref datesintegration)
